@@ -1,5 +1,5 @@
-import Log from './logger.js'
+import Log from './logger'
 
 const log = Log()
 
-export default log
+export { log }
