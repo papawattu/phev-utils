@@ -1,8 +1,8 @@
 {
   "name": "phev-utils",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Utility package for PHEV apps",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test mocha --require babel-polyfill --compilers js:babel-core/register --recursive ./src/**/*.spec.js",
     "start": "echo Very sorry, you cannot start this utils package",
@@ -28,6 +28,7 @@
     "cross-env": "^5.0.5",
     "mocha": "^3.5.1",
     "rimraf": "^2.6.1",
+    "semistandard": "^11.0.0",
     "sinon": "^3.2.1"
   }
 }
