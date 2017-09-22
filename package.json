@@ -6,8 +6,7 @@
   "scripts": {
     "test": "cross-env NODE_ENV=test mocha --require babel-polyfill --compilers js:babel-core/register --recursive ./src/**/*.spec.js",
     "start": "echo Very sorry, you cannot start this utils package",
-    "build": "rimraf lib && babel src -d lib --ignore *.spec.js",
-    "prepublish": "npm run build",
+    "build": "npm test && rimraf lib && babel src -d lib --ignore *.spec.js",
     "prepare": "npm run build"
   },
   "repository": {

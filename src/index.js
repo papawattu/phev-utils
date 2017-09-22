@@ -1,5 +1,6 @@
 import Log from './logger'
+import { encode, decode, toMessageArray } from './encoder_decoder'
 
 const log = Log()
 
-export { log }
+export { log, encode, decode, toMessageArray }
