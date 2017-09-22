@@ -26,7 +26,7 @@ describe('Log',() => {
     it('Should have warn(ing) method',() => {
         assert.isNotNull(sut.warn)
     })
-    it('Should defualt to log level zero',() => {
+    it('Should default to log level zero',() => {
         assert(sut.level === 0)
     })
     it('Should only show debug output when debug environment var is set',() => {
