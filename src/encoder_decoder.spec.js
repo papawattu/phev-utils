@@ -10,6 +10,10 @@ const incompleteMessage = Buffer.from([0x00,0x00,0x00,0x6f, 0x0a, 0x00, 0x12, 0x
 const gargbageMessage = Buffer.from([0x00,0x00,0x00,0x0d, 0x01, 0xff]);
 const wrongLengthMessage = Buffer.from([0xf6,0xff,0x00,0x0d, 0x01, 0xff]);
 const lengthPastEndMessage = Buffer.from([0x00,0xf6,0xff,0x00,0x0d, 0x01, 0xff]);
+const invalidCommandMessage = Buffer.from([0xff, 0x0a, 0x00, 0x12, 0x11, 0x05, 0x16, 0x15, 0x03, 0x0d, 0x01, 0xff]);
+const invalidLengthMessage = Buffer.from([0x6f, 0x0b, 0x00, 0x12, 0x11, 0x05, 0x16, 0x15, 0x03, 0x0d, 0x01, 0xff]);
+const invalidChecksumMessage = Buffer.from([0x6f, 0x0b, 0x00, 0x12, 0x11, 0x05, 0x16, 0x15, 0x03, 0x0d, 0x01, 0xff]);
+const validSingleMessage = Buffer.from([0x6f, 0x0a, 0x00, 0x12, 0x10, 0x06, 0x06, 0x13, 0x05, 0x13, 0x01, 0xd3]);
 
 const empty = Buffer.from([]);
 const commandObj = {
@@ -87,6 +91,21 @@ describe('Checksum', () => {
         assert.equal(checksum, 0xdd);
     });
 });
+
+describe('Validate', () => {
+    it('Should return true on valid message', () => {
+        assert.isTrue(EncoderDecoder.validate(validSingleMessage))
+    });
+    it('Should return false on invalid command', () => {
+        assert.isFalse(EncoderDecoder.validate(invalidCommandMessage))
+    });
+    it('Should return false on invalid length', () => {
+        assert.isFalse(EncoderDecoder.validate(invalidLengthMessage))
+    });
+    it('Should return false on invalid checksum', () => {
+        assert.isFalse(EncoderDecoder.validate(invalidChecksumMessage))
+    });
+});
 describe('To message array', () => {
     it('Should return array of split messages', () => {
         const arr = EncoderDecoder.toMessageArray(doubleMessage)
@@ -103,7 +122,7 @@ describe('To message array', () => {
 });
 describe('Find command', () => {
     it('Should find command', () => {
-        const idx = EncoderDecoder.findCommand(singleMessage);
+        const idx = EncoderDecoder.findCommand(validSingleMessage);
         assert.equal(idx, 0);
     });
     it('Should find command in garbage message', () => {
