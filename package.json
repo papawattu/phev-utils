@@ -1,6 +1,6 @@
 {
   "name": "phev-utils",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Utility package for PHEV apps",
   "main": "./lib/index.js",
   "scripts": {
