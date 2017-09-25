@@ -80,24 +80,38 @@ const generateChecksum = data => {
     return checksum;
 }
 
-const toMessageArray = (messages,current) => {
+const toMessageArray = (messages, current) => {
     const arr = current || []
-    
+
     return messages.length > 0
-        ? toMessageArray(Buffer.from(messages.slice(arr[arr.push(extract(messages))-1].length,messages.length)),arr)
+        ? toMessageArray(Buffer.from(messages.slice(arr[arr.push(extract(messages)) - 1].length, messages.length)), arr)
         : arr || []
 }
 
 const validate = message => {
-    if(findCommand(message) < 0) {
+    if (findCommand(message) < 0) {
         return false
     }
-    if(message.length !== message[1] + 2) {
+    if (message.length !== message[1] + 2) {
         return false
     }
-    if(generateChecksum(Buffer.from(message,0,message.length-2)) !== message[message.length-1]) {
+    if (generateChecksum(Buffer.from(message, 0, message.length - 2)) !== message[message.length - 1]) {
         return false
     }
     return true
 }
-export { generateChecksum, encode, decode, extract, findCommand, popMessage, toMessageArray, validate }
+
+const buildMsg =
+    command =>
+        type =>
+            register =>
+                length =>
+                    data => ({
+                        command: command,
+                        type: type,
+                        register: register,
+                        length: length,
+                        data: data
+                    })
+
+export { generateChecksum, encode, decode, extract, findCommand, popMessage, toMessageArray, validate, buildMsg }
