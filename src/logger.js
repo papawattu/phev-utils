@@ -5,10 +5,10 @@ const Log = ({ level = defaultLevel } = {}) => {
     let currentLevel = level
 
     return {
-        info: console.info,
+        info: msg => console.info('INFO : ' + msg),
         debug: msg => currentLevel ? console.log('DEBUG : ' + msg) : undefined,
-        error: console.error,
-        warn: console.warn,
+        error: msg => console.error('ERROR : ' + msg),
+        warn: msg => console.warn('WARNING : ' + msg),
         level: currentLevel,
         setLevel: level => currentLevel = level
     }
