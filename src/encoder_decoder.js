@@ -1,4 +1,4 @@
-import { log } from './logger'
+import { log } from './'
 
 const allowedCommands = [0xf2, 0x2f, 0xf6, 0x6f, 0xf9, 0x9f];
 
@@ -72,17 +72,8 @@ const encode = command => {
     return message;
 }
 
-const generateChecksum = data => data.reduce((y, x) => y + x & 0xff, 0)
-/*
-const generateChecksum = data => {
-    let checksum = 0;
+const generateChecksum = data => data.reduce((y, x, i) => i < data.length -1 ? y + x & 0xff : y, 0)
 
-    for (let i = 0; i < data.length - 1; i++) {
-        checksum = data[i] + checksum & 0xff;
-    }
-    return checksum;
-}
-*/
 const toMessageArray = (messages, current) => {
     const arr = current || []
 
