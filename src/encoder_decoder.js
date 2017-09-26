@@ -70,15 +70,8 @@ const encode = command => {
     return message;
 }
 
+const generateChecksum = data => data.reduce((y, x) => y + x & 0xff, 0)
 
-const generateChecksum = data => {
-    let checksum = 0;
-
-    for (let i = 0; i < data.length - 1; i++) {
-        checksum = data[i] + checksum & 0xff;
-    }
-    return checksum;
-}
 
 const toMessageArray = (messages, current) => {
     const arr = current || []
