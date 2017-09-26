@@ -1,4 +1,4 @@
-import log from './logger'
+import { log } from './logger'
 
 const allowedCommands = [0xf2, 0x2f, 0xf6, 0x6f, 0xf9, 0x9f];
 
