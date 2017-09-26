@@ -1,3 +1,5 @@
+import log from './logger'
+
 const allowedCommands = [0xf2, 0x2f, 0xf6, 0x6f, 0xf9, 0x9f];
 
 const popMessage = (messages, callback) => {
@@ -71,8 +73,16 @@ const encode = command => {
 }
 
 const generateChecksum = data => data.reduce((y, x) => y + x & 0xff, 0)
+/*
+const generateChecksum = data => {
+    let checksum = 0;
 
-
+    for (let i = 0; i < data.length - 1; i++) {
+        checksum = data[i] + checksum & 0xff;
+    }
+    return checksum;
+}
+*/
 const toMessageArray = (messages, current) => {
     const arr = current || []
 
@@ -83,12 +93,15 @@ const toMessageArray = (messages, current) => {
 
 const validate = message => {
     if (findCommand(message) < 0) {
+        log.error('Cannot find command in message :' + JSON.stringify(message))
         return false
     }
     if (message.length !== message[1] + 2) {
+        log.error('Message length incorrect :' + JSON.stringify(message))
         return false
     }
     if (generateChecksum(Buffer.from(message, 0, message.length - 2)) !== message[message.length - 1]) {
+        log.error('Checksum incorrect :' +JSON.stringify(message))
         return false
     }
     return true
