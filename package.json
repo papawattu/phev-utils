@@ -32,8 +32,5 @@
     "rimraf": "^2.6.1",
     "semistandard": "^11.0.0",
     "sinon": "^3.2.1"
-  },
-  "dependencies": {
-    "phev-messaging": "github:papawattu/phev-messaging"
   }
 }
