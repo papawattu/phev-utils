@@ -1,14 +1,16 @@
 {
   "name": "phev-utils",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Utility package for PHEV apps",
   "main": "./lib/index.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test mocha --require babel-polyfill --compilers js:babel-core/register --recursive ./src/**/*.spec.js",
     "test-watch": "cross-env NODE_ENV=test mocha --watch --require babel-polyfill --compilers js:babel-core/register --recursive ./src/**/*.spec.js",
     "start": "echo Very sorry, you cannot start this utils package",
-    "build": "rimraf lib && babel src -d lib --ignore *.spec.js",
-    "prepare": "npm run build"
+    "build": "npm run clean && babel src -d lib --ignore *.spec.js",
+    "prepare": "npm run build",
+    "clean": "rimraf lib",
+    "sim": "npm run build && node lib/sim"
   },
   "repository": {
     "type": "git",
@@ -30,5 +32,8 @@
     "rimraf": "^2.6.1",
     "semistandard": "^11.0.0",
     "sinon": "^3.2.1"
+  },
+  "dependencies": {
+    "phev-messaging": "github:papawattu/phev-messaging"
   }
 }

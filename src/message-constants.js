@@ -1,0 +1,10 @@
+export const PING_SEND_CMD = 0xf9
+export const PING_RESP_CMD = 0x9f
+export const START_SEND = 0xf2
+export const START_RESP = 0x2f
+export const SEND_CMD = 0xf6
+export const RESP_CMD = 0x6f
+export const DEFAULT_LENGTH = 4
+export const REQUEST_TYPE = 0
+export const RESPONSE_TYPE = 1
+export const EMPTY_DATA = Buffer.from([0]);
