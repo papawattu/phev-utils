@@ -1,35 +1,15 @@
 import net from 'net'
-import { decode, encode, toMessageArray, buildMsg } from './encoder_decoder'
+import { decode, encode, toMessageArray, buildMsg, popMessage } from './encoder_decoder'
 import { DEFAULT_LENGTH, START_SEND, REQUEST_TYPE, SEND_CMD, RESP_CMD, EMPTY_DATA, PING_SEND_CMD, RESPONSE_TYPE } from './message-constants'
-import { log, codes } from '.'
+import * as fs from 'fs' 
 
+const sendRaw = (socket, message) => {
+    console.log('> ' + message.toString('hex'))
+    socket.write(message)
+} 
 
-//const sendFullCommand = (register, data) => send(buildMsg(RESP_CMD)(REQUEST_TYPE)(register)(DEFAULT_LENGTH + data.length - 1)(data))
+const send = (socket, message) => sendRaw(socket,encode(message))
 
-//const sendDateSync = date => sendFullCommand(codes.KO_WF_DATE_INFO_SYNC_EVR, Buffer.from([date.getFullYear() - 2000, date.getMonth() + 1, date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), 1]))
-
-const startDateSync = () => {
-    log.debug('Started Date sync')
-    return setInterval(() => {
-        const date = new Date()
-        log.debug('Send date sync ' + date.toJSON())
-        sendDateSync(date)
-    }, 30000)
-}
-/*
-messaging.start()
-messaging.registerHandler(message => {
-    const messages = toMessageArray(message).map(x => decode(x)).filter(x => x.command === 0xf6 && x.type === 0)
-
-    const response = messages.map(message => {
-
-        message.command = 0x6f
-        message.type = 1
-        message.data = Buffer.from([0])
-        send(message)
-    })
-})
-*/
 const swapNibble = byte => {
     if(byte == 0xf2) return 0x2f
     if(byte == 0xf6) return 0x6f
@@ -37,8 +17,8 @@ const swapNibble = byte => {
     return 0
 }
 const responder = ((data, socket) => {
-    EncoderDecoder.popMessage(doubleMessage,(message) => {
-        const cmd = EncoderDecoder.decode(message)
+    popMessage(data,(message) => {
+        const cmd = decode(message)
         const response = {
             command : swapNibble(cmd.command),
             length  : DEFAULT_LENGTH,
@@ -47,15 +27,18 @@ const responder = ((data, socket) => {
             data    : EMPTY_DATA, 
         }
 
-        socket.write(EncoderDecoder.encode(response))
-    });
-});
+        send(socket,response)
+    })
+})
 const startSocket = () => {
     const server = net.createServer(socket => {
         console.log('Connected')
+        responder2(socket)
+  
+        socket.on('error', err => console.log('Error ' + err))
         socket.on('end', () => console.log('Disconnected'))
         socket.on('data', data => {
-            console.log('Data ' + JSON.stringify(decode(data)))
+            console.log('< ' + data.toString('hex'))
             responder(data,socket)
         })
     })
@@ -64,7 +47,21 @@ const startSocket = () => {
     server.listen(8080, () => console.log('Server listening on port 8080'))
 }
 
+const responder2 = socket => {
+    let i = 0
+    const data = fs.readFileSync('resources/data.txt')
+    const str = data.toString()
+    
+    const arr = str.split('\n')
 
-//startDateSync()
+    const res = arr.filter(x => x.charAt(0) == ' ')
+        .map(x => x.substring(14,62)
+            .split(' ')
+            .filter(y => y.length == 2)
+            .reduce((buf,x,idx) => Buffer.concat([buf,Buffer.from(x,'hex')]),Buffer.from([])))
+    
+    setInterval(() => sendRaw(socket,res[(i < res.length ? i++:process.exit())]),200)
+    
+}
 
 startSocket()
